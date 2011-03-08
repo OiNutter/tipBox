@@ -1,6 +1,6 @@
+var tipBox = {
+	tip:(function(element,text,options){
 
-var tipBox = (function(element,text,options){
-	 
 	if(typeof element == 'string'){
 		element = '#' + element;
 	
@@ -157,8 +157,18 @@ var tipBox = (function(element,text,options){
          _addEvent(_target,_options.showOn,show);
          _addEvent(_target,_options.hideOn,hide);
 
-return {
-    show:show,
-    hide:hide
+         return {
+        	 show:show,
+        	 hide:hide
+         }
+	}),
+	scan: function(className,options){
+		//auto magical toolbox generation
+		var tips = [],
+			triggers = document.querySelectorAll('.' + className), 
+			tipOptions = options || {};
+		for(var i= 0; i<triggers.length;i++)
+			tips.push(new tipBox.tip(triggers[i],triggers[i].title,tipOptions));
+	}
 }
-});
+

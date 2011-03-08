@@ -32,6 +32,14 @@
 			font:10pt Helvetica;
 			color:#fff;
 		}
+		
+		.autoTipBox{
+			display:block;
+			width:100px;
+			height:25px;
+			margin:5px 0;
+			background:#cc0000;
+		}
 	</style>
 </head>
 <body>
@@ -56,23 +64,33 @@
 	<h2>Mouse Tracking</h2>
 	<div id="trigger-mouse"></div>
 	
+	<h2>Auto Generation</h2>
+	<a title="auto 1" class="autoTipBox"></a>
+	<a title="auto 2" class="autoTipBox"></a>
+	<a title="auto 3" class="autoTipBox"></a>
+	<a title="auto 4" class="autoTipBox"></a>
+	<a title="auto 5" class="autoTipBox"></a>
+	<a title="auto 6" class="autoTipBox"></a>
+	
 	<script language="Javascript" type="text/javascript" src="../../src/tipBox.js"></script>
 	<script type="text/javascript">
-		var tip = new tipBox('trigger','test');
+		var tip = new tipBox.tip('trigger','test');
 		
-		var topLeft = new tipBox('trigger-top-left','top-left',{position:'top-left'});
-		var top = new tipBox('trigger-top','top',{position:'top'});
-		var topRight = new tipBox('trigger-top-right','top-right',{position:'top-right'});
+		var topLeft = new tipBox.tip('trigger-top-left','top-left',{position:'top-left'});
+		var top = new tipBox.tip('trigger-top','top',{position:'top'});
+		var topRight = new tipBox.tip('trigger-top-right','top-right',{position:'top-right'});
 		
-		var left = new tipBox('trigger-left','left',{position:'left'});
-		var center = new tipBox('trigger-center','center',{position:'center'});
-		var right = new tipBox('trigger-right','right',{position:'right'});
+		var left = new tipBox.tip('trigger-left','left',{position:'left'});
+		var center = new tipBox.tip('trigger-center','center',{position:'center'});
+		var right = new tipBox.tip('trigger-right','right',{position:'right'});
 		
-		var bottomLeft = new tipBox('trigger-bottom-left','bottom-left',{position:'bottom-left'});
-		var bottom = new tipBox('trigger-bottom','bottom',{position:'bottom'});
-		var bottomRight = new tipBox('trigger-bottom-right','bottom-right',{position:'bottom-right'});
+		var bottomLeft = new tipBox.tip('trigger-bottom-left','bottom-left',{position:'bottom-left'});
+		var bottom = new tipBox.tip('trigger-bottom','bottom',{position:'bottom'});
+		var bottomRight = new tipBox.tip('trigger-bottom-right','bottom-right',{position:'bottom-right'});
 		
-		var mouseLock = new tipBox('trigger-mouse','mouse tracking',{snapTo:'mouse'})
+		var mouseLock = new tipBox.tip('trigger-mouse','mouse tracking',{snapTo:'mouse'});
+		
+		tipBox.scan('autoTipBox');
 	</script>
 </body>
 </html>
