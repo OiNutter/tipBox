@@ -60,17 +60,19 @@
 	<script type="text/javascript">
 		var tip = new tipBox('trigger','test');
 		
-		var topLeft = new tipBox('trigger-top-left','top-left',{lockTo:'top-left'});
-		var top = new tipBox('trigger-top','top',{lockTo:'top'});
-		var topRight = new tipBox('trigger-top-right','top-right',{lockTo:'top-right'});
+		var topLeft = new tipBox('trigger-top-left','top-left',{position:'top-left'});
+		var top = new tipBox('trigger-top','top',{position:'top'});
+		var topRight = new tipBox('trigger-top-right','top-right',{position:'top-right'});
 		
-		var left = new tipBox('trigger-left','left',{lockTo:'left'});
-		var center = new tipBox('trigger-center','center',{lockTo:'center'});
-		var right = new tipBox('trigger-right','right',{lockTo:'right'});
+		var left = new tipBox('trigger-left','left',{position:'left'});
+		var center = new tipBox('trigger-center','center',{position:'center'});
+		var right = new tipBox('trigger-right','right',{position:'right'});
 		
-		var bottomLeft = new tipBox('trigger-bottom-left','bottom-left',{lockTo:'bottom-left'});
-		var bottom = new tipBox('trigger-bottom','bottom',{lockTo:'bottom'});
-		var bottomRight = new tipBox('trigger-bottom-right','bottom-right',{lockTo:'bottom-right'});
+		var bottomLeft = new tipBox('trigger-bottom-left','bottom-left',{position:'bottom-left'});
+		var bottom = new tipBox('trigger-bottom','bottom',{position:'bottom'});
+		var bottomRight = new tipBox('trigger-bottom-right','bottom-right',{position:'bottom-right'});
+		
+		var mouseLock = new tipBox('trigger-mouse','mouse tracking',{snapTo:'mouse'})
 	</script>
 </body>
 </html>
