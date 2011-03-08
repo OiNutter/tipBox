@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>index</title>
+	<style type="text/css">
+		#trigger,#trigger-mouse{
+			width:100px;
+			height:25px;
+			background:#cc0000;
+		}
+		
+		.tipBox{
+			border:2px solid #333;
+			background:#999;
+		}
+		
+		#positions{
+			width:330px;
+			padding:50px 100px;
+			background:#ccc;
+		}
+		
+		.box{
+			width:94px;
+			height:94px;
+			background:#cc0000;
+			padding:3px;
+			margin:5px;
+			float:left;
+			font:10pt Helvetica;
+			color:#fff;
+		}
+	</style>
+</head>
+<body>
+	<h1>tipBox Functional Tests</h1>
+	<h2>Basic</h2>
+	<div id="trigger"></div>
+	
+	<h2>Positions</h2>
+	<div id="positions">
+		<div id="trigger-top-left" class="box">Top Left</div>
+		<div id="trigger-top" class="box" style="text-align:center">Top</div>
+		<div id="trigger-top-right" class="box" style="text-align:right">Top Right</div>
+		<div id="trigger-left" class="box" style="padding-top:40px;height:57px">Left</div>
+		<div id="trigger-center" class="box" style="text-align:center;padding-top:40px;height:57px">Center</div>
+		<div id="trigger-right" class="box" style="text-align:right;padding-top:40px;height:57px">Right</div>
+		<div id="trigger-bottom-left" class="box" style="padding-top:82px;height:15px">Bottom Left</div>
+		<div id="trigger-bottom" class="box" style="text-align:center;padding-top:82px;height:15px">Bottom</div>
+		<div id="trigger-bottom-right" class="box" style="text-align:right;padding-top:82px;height:15px">Bottom Right</div>
+		<br style="clear:both"/>
+	</div>
+	
+	<h2>Mouse Tracking</h2>
+	<div id="trigger-mouse"></div>
+	
+	<script language="Javascript" type="text/javascript" src="../../src/tipBox.js"></script>
+	<script type="text/javascript">
+		var tip = new tipBox('trigger','test');
+		
+		var topLeft = new tipBox('trigger-top-left','top-left',{lockTo:'top-left'});
+		var top = new tipBox('trigger-top','top',{lockTo:'top'});
+		var topRight = new tipBox('trigger-top-right','top-right',{lockTo:'top-right'});
+		
+		var left = new tipBox('trigger-left','left',{lockTo:'left'});
+		var center = new tipBox('trigger-center','center',{lockTo:'center'});
+		var right = new tipBox('trigger-right','right',{lockTo:'right'});
+		
+		var bottomLeft = new tipBox('trigger-bottom-left','bottom-left',{lockTo:'bottom-left'});
+		var bottom = new tipBox('trigger-bottom','bottom',{lockTo:'bottom'});
+		var bottomRight = new tipBox('trigger-bottom-right','bottom-right',{lockTo:'bottom-right'});
+	</script>
+</body>
+</html>
