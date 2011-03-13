@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>index</title>
 	<style type="text/css">
-		#trigger,#trigger-mouse{
+		#trigger,#trigger-mouse,#trigger-fade{
 			width:100px;
 			height:25px;
 			background:#cc0000;
@@ -72,6 +72,10 @@
 	<a title="auto 5" class="autoTipBox"></a>
 	<a title="auto 6" class="autoTipBox"></a>
 	
+	<h2>Fade Animation</h2>
+	<div id="trigger-fade"></div>
+	
+	
 	<script language="Javascript" type="text/javascript" src="../../src/tipBox.js"></script>
 	<script type="text/javascript">
 		var tip = new tipBox.tip('trigger','test');
@@ -91,6 +95,8 @@
 		var mouseLock = new tipBox.tip('trigger-mouse','mouse tracking',{snapTo:'mouse'});
 		
 		tipBox.scan('autoTipBox');
+		
+		var fade = new tipBox.tip('trigger-fade','fade test',{animation:'fade'});
 	</script>
 </body>
 </html>

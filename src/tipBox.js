@@ -9,6 +9,8 @@ var tipBox = {
 	}
 	
 	 var _target = (typeof element == 'string') ? document.querySelector(element): element,
+	 	 _webkit = navigator.userAgent.match(/WebKit\/([\d.]+)/) ? true : false,
+	 	 _gecko2 = navigator.userAgent.match(/(rv:2)(.*)(Gecko\/([\d.]+))/) ? true : false,
          _text = text,
          _tipBox,
          _showTimer,
@@ -76,7 +78,11 @@ var tipBox = {
                             showDelay:1,
                             hideOn: 'mouseout',
                             hideDelay:1,
-                            template: "<div class='tipBox'>[text]</div>"},options),
+                            template: "<div class='tipBox'>[text]</div>",
+                            animation:"none",
+                            duration:0.5,
+                            easing:''
+                            },options),
          _position = function(e){
         	 var snapTo = {},
         	 	docElement = document.documentElement,
@@ -118,12 +124,51 @@ var tipBox = {
         		_addEvent(_tipBox,'mousemove',_position);
         	}
          },
+         _animate = function(action,callback){
+         	switch(_options.animation){
+         		case 'fade':
+         			if(_webkit){
+         				_tipBox.style.setProperty('-webkit-transition','opacity ' + _options.duration + "s " + _options.easing,'');
+         				_tipBox.style.opacity = (action=='show') ? 1 : 0;
+         				if(callback !== undefined)
+         					_addEvent(_tipBox,'transitionend',callback);
+         			} else if(_gecko2){
+         				_tipBox.style.setProperty('-moz-transition','opacity ' + _options.duration + "s " + _options.easing,'');
+         				_tipBox.style.opacity = 1;
+         				_tipBox.style.opacity = (action=='show') ? 1 : 0;
+         				if(callback !== undefined)
+         					_addEvent(_tipBox,'transitionend',callback);
+         			} else {
+         				var start = (new Date).getTime(),
+         					duration = _options.duration*1000,
+         					finish = start + duration,
+         					orig = (action=='hide') ? 1 : 0,
+         					target = (action=='show') ? 1 : 0,
+         					interval = setInterval(function(){
+         						var time = (new Date).getTime(),
+         							pos = time > finish ? 1 : (time-start)/duration;
+         							_tipBox.style.opacity = orig + ((target-orig) * pos);
+         							
+         						if(time>finish)
+         							clearInterval(interval);
+         					},10);
+         					
+         				
+         			}
+         	}
+         },
          _draw = function(e){
         	_tipBox = document.createElement('div');
           	_tipBox.innerHTML = _parseTxt();
           	_tipBox.style.position = 'absolute';
-            	_target.parentNode.insertBefore(_tipBox,_target.nextSibling);
-            	_position(e);
+          	if(_options.animation=="fade")
+         		_tipBox.style.opacity = 0;
+         	
+            _target.parentNode.insertBefore(_tipBox,_target.nextSibling);
+            _position(e);
+            if(_options.animation!="none")
+            	_animate('show');
+            	
             if(_options.hideOn=='mouseout'){
             	_addEvent(_tipBox,'mouseover',function(e){window.clearTimeout(_hideTimer)});
                	_addEvent(_tipBox,'mouseout',hide);
@@ -131,10 +176,15 @@ var tipBox = {
             _visible = true;
          },
          _remove = function(){
-        	 _target.parentNode.removeChild(_target.nextSibling);
+         	if(_options.animation != 'none'){
+         		_animate('hide',function(e){_target.parentNode.removeChild(_tipBox);_tipBox = null})
+         	} else {
+        	 	_target.parentNode.removeChild(_tipBox);
+        	 	_tipBox = null;
+        	 }
         	 if(_options.snapTo=='mouse')
         		 _removeEvent(_target,'mousemove',_position);
-        	 _tipBox = null;
+        	 
         	 _visible = false;
          },
          show = function(e){
