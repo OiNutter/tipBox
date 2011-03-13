@@ -149,8 +149,11 @@ var tipBox = {
          							pos = time > finish ? 1 : (time-start)/duration;
          							_tipBox.style.opacity = orig + ((target-orig) * pos);
          							
-         						if(time>finish)
+         						if(time>finish){
          							clearInterval(interval);
+         							if(callback !== undefined)
+         								callback.call();	
+         						}
          					},10);
          					
          				
@@ -177,7 +180,7 @@ var tipBox = {
          },
          _remove = function(){
          	if(_options.animation != 'none'){
-         		_animate('hide',function(e){_target.parentNode.removeChild(_tipBox);_tipBox = null})
+         		_animate('hide',function(){_target.parentNode.removeChild(_tipBox);_tipBox = null})
          	} else {
         	 	_target.parentNode.removeChild(_tipBox);
         	 	_tipBox = null;
