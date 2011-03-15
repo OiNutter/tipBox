@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>index</title>
 	<style type="text/css">
-		#trigger,#trigger-mouse,#trigger-fade{
+		#trigger,#trigger-mouse,#trigger-fade,#trigger-scale{
 			width:100px;
 			height:25px;
 			background:#cc0000;
@@ -75,6 +75,8 @@
 	<h2>Fade Animation</h2>
 	<div id="trigger-fade"></div>
 	
+	<h2>Scale Animation</h2>
+	<div id="trigger-scale"></div>
 	
 	<script language="Javascript" type="text/javascript" src="../../src/tipBox.js"></script>
 	<script type="text/javascript">
@@ -97,6 +99,7 @@
 		tipBox.scan('autoTipBox');
 		
 		var fade = new tipBox.tip('trigger-fade','fade test',{animation:'fade'});
+		var scale = new tipBox.tip('trigger-scale','scale test',{animation:'scale'});
 	</script>
 </body>
 </html>

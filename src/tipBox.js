@@ -81,12 +81,15 @@ var tipBox = {
                             template: "<div class='tipBox'>[text]</div>",
                             animation:"none",
                             duration:0.5,
-                            easing:''
+                            easing:'ease'
                             },options),
-         _position = function(e){
+         _position = function(e,el){
         	 var snapTo = {},
         	 	docElement = document.documentElement,
         	 	body = document.body || { scrollLeft: 0 };
+        	 	
+        	if(el===undefined)
+        		el = _tipBox;
         	 	
         	if(_options.snapTo=='mouse')
         		snapTo = {
@@ -99,79 +102,127 @@ var tipBox = {
         		snapTo = {
     					'top':_target.offsetTop,
     					'left': _target.offsetLeft,
-    					'width':_target.offsetWidth,
-    					'height':_target.offsetHeight
+    					'width':parseFloat(_target.style.width) || _target.offsetWidth,
+    					'height':parseFloat(_target.style.height) || _target.offsetHeight
     				};
         	
         		//get y position
         		if(_options.position.indexOf('top')!=-1)
-        			_tipBox.style.top = snapTo.top - _tipBox.offsetHeight + "px";
+        			el.style.top = snapTo.top - (parseFloat(el.style.height) || el.offsetHeight) + "px";
         		else if(_options.position.indexOf('bottom')!=-1)
-        			_tipBox.style.top = snapTo.top + snapTo.height + "px";
+        			el.style.top = snapTo.top + snapTo.height + "px";
         		else
-        			_tipBox.style.top = snapTo.top - ((_tipBox.offsetHeight-snapTo.height)/2) + "px";
+        			el.style.top = snapTo.top - (((parseFloat(el.style.height) || el.offsetHeight)-snapTo.height)/2) + "px";
         		
         		//get x position
         		if(_options.position.indexOf('left')!=-1)
-        			_tipBox.style.left = snapTo.left - _tipBox.offsetWidth + "px";
+        			el.style.left = snapTo.left - (parseFloat(el.style.width) || el.offsetWidth) + "px";
         		else if(_options.position.indexOf('right')!=-1)
-        			_tipBox.style.left = snapTo.left + snapTo.width + "px";
+        			el.style.left = snapTo.left + snapTo.width + "px";
         		else
-        			_tipBox.style.left = snapTo.left - ((_tipBox.offsetWidth-snapTo.width)/2) + "px";
+        			el.style.left = snapTo.left - (((parseFloat(el.style.width) || el.offsetWidth)-snapTo.width)/2) + "px";
         		
         	if(_options.snapTo=='mouse'){
         		_addEvent(_target,'mousemove',_position);
-        		_addEvent(_tipBox,'mousemove',_position);
+        		_addEvent(el,'mousemove',_position);
         	}
          },
-         _animate = function(action,callback){
+         _interpolate = function (source,target,pos){ 
+         	return (source+(target-source)*pos).toFixed(3);
+         },
+         _parseProps = function (prop){
+    		var p = parseFloat(prop), q = prop.replace(/^[\-\d\.]+/,'');
+    		return isNaN(p) ? { v: q, f: color, u: ''} : { v: p, f: _interpolate, u: q };
+  		 },
+         _setUpAnimation = function(action){
+         	var props,
+         		testNode = _tipBox.cloneNode(true);
+         	
+         	testNode.visibility = 'hidden';
+         	_target.parentNode.insertBefore(testNode,_target.nextSibling);
+         	_position(null,testNode);
          	switch(_options.animation){
          		case 'fade':
-         			if(_webkit){
-         				_tipBox.style.setProperty('-webkit-transition','opacity ' + _options.duration + "s " + _options.easing,'');
-         				_tipBox.style.opacity = (action=='show') ? 1 : 0;
-         				if(callback !== undefined)
-         					_addEvent(_tipBox,'transitionend',callback);
-         			} else if(_gecko2){
-         				_tipBox.style.setProperty('-moz-transition','opacity ' + _options.duration + "s " + _options.easing,'');
-         				_tipBox.style.opacity = 1;
-         				_tipBox.style.opacity = (action=='show') ? 1 : 0;
-         				if(callback !== undefined)
-         					_addEvent(_tipBox,'transitionend',callback);
+         			props = {"opacity":(action=='show') ? '1' :'0'};
+         			_tipBox.style.opacity = (action=='show') ? '0' : '1';
+         			break;
+         		case 'scale':
+         			props = {'width':(action=='show') ? (parseFloat(testNode.style.width) || testNode.offsetWidth) + "px" : '0px',
+         					'height':(action=='show') ? (parseFloat(testNode.style.height) || testNode.offsetHeight) + "px" : '0px',
+         					'top': testNode.offsetTop + "px",
+         					'left':testNode.offsetLeft + "px"};
+         			
+         			if(action=='show'){
+         				_tipBox.style.width = _tipBox.style.height = '0px';
+         				_tipBox.style.overflow = "hidden";
+         				_tipBox.style.whiteSpace = "no-wrap";
+         				_position();
          			} else {
-         				var start = (new Date).getTime(),
-         					duration = _options.duration*1000,
-         					finish = start + duration,
-         					orig = (action=='hide') ? 1 : 0,
-         					target = (action=='show') ? 1 : 0,
-         					interval = setInterval(function(){
-         						var time = (new Date).getTime(),
-         							pos = time > finish ? 1 : (time-start)/duration;
-         							_tipBox.style.opacity = orig + ((target-orig) * pos);
-         							
-         						if(time>finish){
-         							clearInterval(interval);
-         							if(callback !== undefined)
-         								callback.call();	
-         						}
-         					},10);
-         					
-         				
-         			}
+         				testNode.style.width = testNode.style.height = '1px';
+         				testNode.style.overflow = "hidden";
+         				testNode.style.whiteSpace = "no-wrap";
+         				_position(null,testNode);
+         				props.top =	testNode.style.top || testNode.offsetTop + "px";
+         				props.left = testNode.style.left || testNode.offsetLeft + "px";
+         			}		
+         			break;
          	}
+         	_target.parentNode.removeChild(testNode);
+         	return props;
+         },
+         _animate = function(props,callback){
+         		if(_webkit || _gecko2){
+      				var transitions = [], key;
+    				for(key in props)
+    					 transitions.push(key);
+    				
+    				_tipBox.style.setProperty('-' + (_webkit ? 'webkit' : 'moz') + '-transition-property',transitions.join(', '),'');
+    				_tipBox.style.setProperty('-' + (_webkit ? 'webkit' : 'moz') + '-transition-duration',_options.duration + 's','');
+    				_tipBox.style.setProperty('-' + (_webkit ? 'webkit' : 'moz') + '-transition-timing-function',_options.easing,'');
+    				
+    				for (key in props)
+      					_tipBox.style[key] = props[key];
+      				    				      				
+       				if(callback !== undefined)
+       					_addEvent(_tipBox,(_webkit ? 'webkitTransitionEnd' : 'transitionend'),callback);
+       					
+       			} else {
+       				var start = (new Date).getTime(),
+       					duration = _options.duration*1000,
+       					finish = start + duration,
+       					comp = _tipBox.currentStyle ? _tipBox.currentStyle : getComputedStyle(_tipBox, null),
+       					current = {},
+       					interval,
+       					target = {};
+       					for (var prop in props) target[prop] = _parseProps(props[prop]);
+       					for(var prop in props) current[prop] = _parseProps(comp[prop]);
+       					interval = setInterval(function(){
+       						var time = (new Date).getTime(),
+       							pos = time > finish ? 1 : (time-start)/duration;
+       							for(var prop in target)
+       								_tipBox.style[prop] = target[prop].f(current[prop].v,target[prop].v,tipBox.easing[_options.easing](pos)) + target[prop].u;
+       						
+      						if(time>finish){
+       							clearInterval(interval);
+       							if(callback !== undefined)
+       								callback.call();	
+       						}
+       					},10);
+       			}
          },
          _draw = function(e){
         	_tipBox = document.createElement('div');
           	_tipBox.innerHTML = _parseTxt();
           	_tipBox.style.position = 'absolute';
-          	if(_options.animation=="fade")
-         		_tipBox.style.opacity = 0;
-         	
-            _target.parentNode.insertBefore(_tipBox,_target.nextSibling);
+         	if(_options.animation!='none')
+         		var props = _setUpAnimation('show');
+         		
+         	_target.parentNode.insertBefore(_tipBox,_target.nextSibling);
             _position(e);
+            
             if(_options.animation!="none")
-            	_animate('show');
-            	
+            	_animate(props);
+                 	
             if(_options.hideOn=='mouseout'){
             	_addEvent(_tipBox,'mouseover',function(e){window.clearTimeout(_hideTimer)});
                	_addEvent(_tipBox,'mouseout',hide);
@@ -180,7 +231,8 @@ var tipBox = {
          },
          _remove = function(){
          	if(_options.animation != 'none'){
-         		_animate('hide',function(){_target.parentNode.removeChild(_tipBox);_tipBox = null})
+         		var props = _setUpAnimation('hide');
+         		_animate(props,function(e){if(_tipBox !== null) _target.parentNode.removeChild(_tipBox);_tipBox = null})
          	} else {
         	 	_target.parentNode.removeChild(_tipBox);
         	 	_tipBox = null;
@@ -222,6 +274,14 @@ var tipBox = {
 			tipOptions = options || {};
 		for(var i= 0; i<triggers.length;i++)
 			tips.push(new tipBox.tip(triggers[i],triggers[i].title,tipOptions));
+	},
+	easing: {
+		ease:function(pos) {
+		    return (-Math.cos(pos*Math.PI)/2) + 0.5;
+		  },
+		linear: function(pos){
+			return pos;
+		}
 	}
 }
 
