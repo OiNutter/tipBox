@@ -5,6 +5,7 @@ require 'yaml'
 ROOT_DIR = File.expand_path(File.dirname(__FILE__))
 SRC_DIR = File.join(ROOT_DIR, 'src')
 DIST_DIR = File.join(ROOT_DIR,'dist')
+EXAMPLE_DIR = File.join(ROOT_DIR,'examples/js')
 
 RELEASE_DIR = File.join(DIST_DIR, 'release')
 
@@ -12,7 +13,7 @@ TEST_DIR      = File.join(ROOT_DIR, 'test')
 TEST_UNIT_DIR = File.join(TEST_DIR, 'unit')
 TMP_DIR       = File.join(TEST_UNIT_DIR, 'tmp')
 
-task :default => [:clean, :dist]
+task :default => [:clean, :dist,:examples]
 
 desc "Clean the distribution directory."
 task :clean do 
@@ -57,4 +58,12 @@ def process_minified(src, target)
   puts "Original version: %.3fk" % (osize/1024.0)
   puts "Minified: %.3fk" % (msize/1024.0)
   puts "Minified and gzipped: %.3fk, compression factor %.3f" % [dsize/1024.0, osize/dsize.to_f]
+end
+
+task :examples do
+  puts "Updating JS file in Examples dir..."
+  rm_rf EXAMPLE_DIR
+  mkdir EXAMPLE_DIR
+  cp File.join(RELEASE_DIR,'tipBox.min.js'), File.join(EXAMPLE_DIR,'tipBox.min.js')
+  puts "Updated!"
 end
