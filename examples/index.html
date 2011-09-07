@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>tipBox</title>
+<link type="text/css" rel="stylesheet" href="css/examples.css" media="screen"/>
+</head>
+<body>
+	
+<div id="container">
+	<div id="header">
+		<h1>tipBox - Examples</h1>
+	</div>
+	<div id="middle">
+		<a name="top"></a>
+		<p>Here you'll find a selection of demos for the tipBox tool tip library.  Click a link to jump to that demo.</p>
+		
+		<ul>
+			<li><a href="#basic">Basic</a></li>
+			<li><a href="#positions">Positions</a></li>
+			<li><a href="#tracking">Mouse Tracking</a></li>
+			<li><a href="#auto">Auto Generation</a></li>
+			<li><a href="#fade">Fade</a></li>
+			<li><a href="#scale">Scale</a></li>
+			<li><a href="#links">Further Links</a></li>
+		</ul>
+		
+		<hr/>
+		
+		<a name="basic"></a>
+		<h2>Basic</h2>
+		<p>The default options will put a tooltip at the top left corner of the trigger object.</p>
+		<div class="paper">
+			<div class="box" id="trigger">Hover Over Me!</div>
+		</div>
+		<h3>Default tooltip functionality</h3>
+		
+		<hr/>
+		
+		<a name="positions"></a>
+		<h2>Positions</h2>
+		<p>There are 9 possible preset positions you can use.</p>
+		<div class="paper" id="presets">
+			<div id="trigger-top-left" class="box">Top Left</div>
+			<div id="trigger-top" class="box" style="text-align:center">Top</div>
+			<div id="trigger-top-right" class="box" style="text-align:right">Top Right</div>
+			<div id="trigger-left" class="box" style="padding-top:40px;height:57px">Left</div>
+			<div id="trigger-center" class="box" style="text-align:center;padding-top:40px;height:57px">Center</div>
+			<div id="trigger-right" class="box" style="text-align:right;padding-top:40px;height:57px">Right</div>
+			<div id="trigger-bottom-left" class="box" style="padding-top:82px;height:15px">Bottom Left</div>
+			<div id="trigger-bottom" class="box" style="text-align:center;padding-top:82px;height:15px">Bottom</div>
+			<div id="trigger-bottom-right" class="box" style="text-align:right;padding-top:82px;height:15px">Bottom Right</div>
+			<br class="clearboth"/>
+		</div>
+		<h3>Preset positions</h3>
+		
+		<hr/>
+		
+		<a name="links"></a>
+		<h2>Further Links</h2>
+		
+		<p>Check out the <a href="http://www.oinutter.co.uk/projects/tipBox/">project page</a> or view the source and usage instructions on <a href="https://github.com/OiNutter/tipBox">GitHub </a>. 
+		
+	</div>
+</div>
+<script language="Javascript" type="text/javascript" src="js/tipBox.min.js"></script>
+<script type="text/javascript">
+		window.onload = function(){	
+				var tip = new tipBox.tip('trigger','This is a basic tooltip');
+		
+		var topLeft = new tipBox.tip('trigger-top-left','top-left',{position:'top-left'});
+		var top = new tipBox.tip('trigger-top','top',{position:'top'});
+		var topRight = new tipBox.tip('trigger-top-right','top-right',{position:'top-right'});
+		
+		var left = new tipBox.tip('trigger-left','left',{position:'left'});
+		var center = new tipBox.tip('trigger-center','center',{position:'center'});
+		var right = new tipBox.tip('trigger-right','right',{position:'right'});
+		
+		var bottomLeft = new tipBox.tip('trigger-bottom-left','bottom-left',{position:'bottom-left'});
+		var bottom = new tipBox.tip('trigger-bottom','bottom',{position:'bottom'});
+		var bottomRight = new tipBox.tip('trigger-bottom-right','bottom-right',{position:'bottom-right'});
+		
+		var mouseLock = new tipBox.tip('trigger-mouse','mouse tracking',{snapTo:'mouse'});
+		
+		tipBox.scan('autoTipBox');
+		
+		var fade = new tipBox.tip('trigger-fade','fade test',{animation:'fade'});
+		var scale = new tipBox.tip('trigger-scale','scale test',{animation:'scale'});
+		};
+	</script>
+</body>
+</html>
