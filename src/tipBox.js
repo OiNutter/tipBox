@@ -48,6 +48,13 @@ var tipBox = {
 	   			
 	   			return vars;
 	   		},
+	   	_getElementDimensions = function(el){
+	   		var style = (window.getComputedStyle) ? window.getComputedStyle(el,null) : el.currentStyle;
+	   		return {
+	   			height: parseFloat(style.height) + (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0) + (parseFloat(style.borderTopWidth) || 0) + (parseFloat(style.borderBottomWidth) || 0),
+	   			width: parseFloat(style.width) + (parseFloat(style.paddingLeft) || 0) + (parseFloat(style.paddingRight) || 0) + (parseFloat(style.borderLeftWidth) || 0) + (parseFloat(style.borderRightWidth) || 0)
+	   		}
+	   	},
          _mergeOptions = function(destination,source){
 	   			var property,prop;
 	   			for (property in source){
@@ -86,11 +93,16 @@ var tipBox = {
          _position = function(e,el){
         	 var snapTo = {},
         	 	docElement = document.documentElement,
-        	 	body = document.body || { scrollLeft: 0 };
+        	 	body = document.body || { scrollLeft: 0 },
+        	 	dimensions = _getElementDimensions(_target),
+        	 	elDimensions;        	
         	 	
         	if(el===undefined)
         		el = _tipBox;
         	 	
+        	elDimensions = _getElementDimensions(el);
+        	console.log(elDimensions);
+        	
         	if(_options.snapTo=='mouse')
         		snapTo = {
     					'top':e.pageY || (e.clientY + (docElement.scrollTop || body.scrollTop) - (docElement.clientTop || 0)),
@@ -102,25 +114,25 @@ var tipBox = {
         		snapTo = {
     					'top':_target.offsetTop,
     					'left': _target.offsetLeft,
-    					'width':parseFloat(_target.style.width) || _target.offsetWidth,
-    					'height':parseFloat(_target.style.height) || _target.offsetHeight
+    					'width':dimensions.width || _target.offsetWidth,
+    					'height':dimensions.height || _target.offsetHeight
     				};
-        	
+        
         		//get y position
         		if(_options.position.indexOf('top')!=-1)
-        			el.style.top = snapTo.top - (parseFloat(el.style.height) || el.offsetHeight) + "px";
+        			el.style.top = snapTo.top - (elDimensions.height || el.offsetHeight) + "px";
         		else if(_options.position.indexOf('bottom')!=-1)
         			el.style.top = snapTo.top + snapTo.height + "px";
         		else
-        			el.style.top = snapTo.top - (((parseFloat(el.style.height) || el.offsetHeight)-snapTo.height)/2) + "px";
+        			el.style.top = snapTo.top - (((elDimensions.height || el.offsetHeight)-snapTo.height)/2) + "px";
         		
         		//get x position
         		if(_options.position.indexOf('left')!=-1)
-        			el.style.left = snapTo.left - (parseFloat(el.style.width) || el.offsetWidth) + "px";
+        			el.style.left = snapTo.left - (elDimensions.width || el.offsetWidth) + "px";
         		else if(_options.position.indexOf('right')!=-1)
         			el.style.left = snapTo.left + snapTo.width + "px";
         		else
-        			el.style.left = snapTo.left - (((parseFloat(el.style.width) || el.offsetWidth)-snapTo.width)/2) + "px";
+        			el.style.left = snapTo.left - (((elDimensions.width || el.offsetWidth)-snapTo.width)/2) + "px";
         		
         	if(_options.snapTo=='mouse'){
         		_addEvent(_target,'mousemove',_position);
@@ -136,10 +148,12 @@ var tipBox = {
   		 },
          _setUpAnimation = function(action){
          	var props,
-         		testNode = _tipBox.cloneNode(true);
-         	
+         		testNode = _tipBox.cloneNode(true),
+         		dimensions;
+         		
          	testNode.visibility = 'hidden';
          	_target.parentNode.insertBefore(testNode,_target.nextSibling);
+         	dimensions = _getElementDimensions(testNode);
          	_position(null,testNode);
          	switch(_options.animation){
          		case 'fade':
@@ -147,8 +161,8 @@ var tipBox = {
          			_tipBox.style.opacity = (action=='show') ? '0' : '1';
          			break;
          		case 'scale':
-         			props = {'width':(action=='show') ? (parseFloat(testNode.style.width) || testNode.offsetWidth) + "px" : '0px',
-         					'height':(action=='show') ? (parseFloat(testNode.style.height) || testNode.offsetHeight) + "px" : '0px',
+         			props = {'width':(action=='show') ? (dimensions.width || testNode.offsetWidth) + "px" : '0px',
+         					'height':(action=='show') ? (dimensions.height || testNode.offsetHeight) + "px" : '0px',
          					'top': testNode.offsetTop + "px",
          					'left':testNode.offsetLeft + "px"};
          			
